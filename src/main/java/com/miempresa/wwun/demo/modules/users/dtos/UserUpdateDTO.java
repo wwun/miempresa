@@ -7,6 +7,9 @@ public class UserUpdateDTO {
     private String email;
     private List<String> roles;
 
+    UserUpdateDTO(){        
+    }
+    
     public String getUsername() {
         return username;
     }

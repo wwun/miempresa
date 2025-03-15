@@ -8,6 +8,8 @@ import java.util.stream.StreamSupport;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import com.miempresa.wwun.demo.mappers.UserMapper;
+import com.miempresa.wwun.demo.modules.users.dtos.UserCreateDTO;
 import com.miempresa.wwun.demo.modules.users.dtos.UserDTO;
 import com.miempresa.wwun.demo.modules.users.entities.Role;
 import com.miempresa.wwun.demo.modules.users.entities.User;
@@ -16,12 +18,15 @@ import com.miempresa.wwun.demo.modules.users.repositories.UserRepository;
 
 public class UserServiceImpl implements UserService{
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
     private RoleRepository roleRepository;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository){
+    private final UserMapper userMapper;
+
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, UserMapper userMapper){
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -33,7 +38,9 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public UserDTO save(UserDTO userDTO) {
+    public UserDTO save(UserCreateDTO userCreateDTO) {
+
+        User user = userMapper.toEntity(userCreateDTO);
 
         List<Role> roles = new ArrayList<>();
         
@@ -45,7 +52,8 @@ public class UserServiceImpl implements UserService{
         
         //pending to add password encoded
 
-        return userRepository.save(user);
+        User userSaved = userRepository.save(user);
+        return userMapper.toDTO(userSaved);
     }
 
     @Override
