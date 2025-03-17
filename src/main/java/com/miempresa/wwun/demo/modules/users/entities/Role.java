@@ -21,6 +21,10 @@ public class Role {
     @Column
     private String description;
 
+    public Role(){
+
+    }
+    
     public Long getId() {
         return id;
     }

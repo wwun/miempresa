@@ -1,5 +1,6 @@
 package com.miempresa.wwun.demo.mappers;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,7 @@ import com.miempresa.wwun.demo.modules.users.entities.User;
 
 @Mapper(componentModel = "spring")  //Le dice a MapStruct que esta interfaz se usará para convertir objetos entre clases, componentModel = "spring": Hace que MapStruct registre este mapper como un bean de Spring, así puedes inyectarlo con @Autowired
 public interface UserMapper {
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);  //INSTANCE: Te da una instancia del mapper sin usar Spring. No la necesitas si usas Spring, pero puede ser útil para pruebas
+    //UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);  //INSTANCE: Te da una instancia del mapper sin usar Spring. No la necesitas si usas Spring, pero puede ser útil para pruebas
 
     @Mapping(source = "roles", target = "roles", qualifiedByName = "mapRolesToStrings") //@Mapping: Define cómo se transforman los campos, source: Campo de origen (roles en la entidad User, target: Campo de destino (roles en UserDTO, qualifiedByName: Le dice a MapStruct que use el método mapRolesToStrings para convertir List<Role> a List<String>
     UserDTO toDTO(User user);
@@ -28,6 +29,7 @@ public interface UserMapper {
     User toEntity(UserCreateDTO dto);
 
     @Mapping(source = "roles", target = "roles", qualifiedByName = "mapStringsToRoles")
+    @Mapping(target = "id", ignore = true) // No mapear id en creación porqe se genera automáticamente en la base d
     @Mapping(target = "password", ignore = true) // Ignorar password en actualización
     @Mapping(target = "admin", ignore = true) // Ignorar admin
     User toEntity(UserUpdateDTO dto);
@@ -36,7 +38,7 @@ public interface UserMapper {
     @Named("mapRolesToStrings") //los métodos de transformación tienen nombres explícitos (mapRolesToStrings, mapStringsToRoles) para que MapStruct los encuentre
     default List<String> mapRolesToString(List<Role> roles) {
         if (roles == null) {
-            return null;
+            return Collections.emptyList();
         }
         return roles.stream()
                     .map(Role::getName) // Suponiendo que Role tiene un método getName(), stream y map: Itera la lista de roles y extrae el name de cada rol, collect: Convierte el stream en una lista
