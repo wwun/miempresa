@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
-import org.mapstruct.factory.Mappers;
 
 import com.miempresa.wwun.demo.modules.users.dtos.UserCreateDTO;
 import com.miempresa.wwun.demo.modules.users.dtos.UserDTO;
